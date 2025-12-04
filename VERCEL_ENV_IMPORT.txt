@@ -1,0 +1,39 @@
+# =================================================================
+# VERCEL ENVIRONMENT VARIABLES IMPORT FILE
+# =================================================================
+# INSTRUCTIONS:
+# 1. Fill in the 3 missing values below (marked with PASTE_HERE)
+# 2. Copy EVERYTHING in this file
+# 3. Go to Vercel Dashboard -> Settings -> Environment Variables
+# 4. Paste into the first field (Key) - Vercel will auto-fill everything!
+# =================================================================
+
+# --- 1. DATABASE & CACHE (YOU MUST FILL THESE) ---
+DATABASE_URL=postgresql://neondb_owner:npg_1oedAQt8RjXn@ep-lingering-queen-ah27r5t5-pooler.c-3.us-east-1.aws.neon.tech/neondb?sslmode=require
+UPSTASH_REDIS_REST_URL=https://selected-elk-34280.upstash.io
+UPSTASH_REDIS_REST_TOKEN=AYXoAAIncDJkMzhjYzFhNGYxMTI0ZDA1OTVlZTkzZWVlMDFmZTBhNnAyMzQyODA
+
+# --- 2. SECURITY SECRETS (GENERATED FOR YOU) ---
+CRON_SECRET=g691/PktO5cQpD2upVwUg5hXLXuCuPPBHMsT6wsXBKwM=
+API_SECRET_KEY=I67dCfHIPfLyhw7r4XlOegRLcHaOTFFBgQIpTKgHKftg=
+
+# --- 3. JNTUH CONFIGURATION ---
+JNTUH_RESULTS_BASE_URL=http://results.jntuh.ac.in/results/
+JNTUH_EXAM_CODE=1323
+JNTUH_RESULT_TYPE=grade
+
+# --- 4. SCRAPER CONFIGURATION (OPTIMIZED FOR R22) ---
+# 20 parallel workers for fast scraping
+SCRAPER_WORKER_COUNT=20
+# Full R22 University Range
+HALL_TICKET_START=220100000001
+HALL_TICKET_END=220999999999
+# 50ms delay to be safe but fast
+SCRAPER_DELAY_MS=50
+SCRAPER_TIMEOUT_MS=10000
+SCRAPER_MAX_RETRIES=3
+
+# --- 5. APP CONFIGURATION ---
+ENABLE_REDIS_CACHE=true
+CACHE_TTL_SECONDS=604800
+NODE_ENV=production
