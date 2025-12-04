@@ -10,32 +10,37 @@ export async function POST(request: NextRequest) {
     }
 
     try {
-        const { start, end } = await request.json();
-        const startNum = BigInt(start);
-        const endNum = BigInt(end);
+        const { hallTickets } = await request.json();
 
-        console.log(`👷 Worker started for range: ${start} - ${end}`);
+        if (!hallTickets || !Array.isArray(hallTickets)) {
+            return NextResponse.json({ error: 'Invalid request. Expected { hallTickets: string[] }' }, { status: 400 });
+        }
+
+        console.log(`👷 Worker started for ${hallTickets.length} hall tickets`);
 
         let processed = 0;
         let success = 0;
+        let notFound = 0;
         const errors: string[] = [];
 
-        // Loop through range
-        for (let ht = startNum; ht <= endNum; ht++) {
-            const hallTicket = ht.toString();
+        // Process each hall ticket
+        for (const hallTicket of hallTickets) {
             processed++;
 
             try {
                 // Add delay to avoid rate limiting
-                await new Promise(r => setTimeout(r, env.scraper.delayMs));
+                if (processed > 1) {
+                    await new Promise(r => setTimeout(r, env.scraper.delayMs));
+                }
 
                 const result = await scrapeResult(hallTicket);
                 if (result) {
                     await saveResult(result);
                     success++;
-                    console.log(`✅ Saved: ${hallTicket}`);
+                    console.log(`✅ ${hallTicket}`);
                 } else {
-                    // console.log(`❌ Not found: ${hallTicket}`);
+                    notFound++;
+                    // console.log(`❌ ${hallTicket} - Not found`);
                 }
             } catch (err) {
                 console.error(`Error processing ${hallTicket}:`, err);
@@ -45,8 +50,12 @@ export async function POST(request: NextRequest) {
 
         return NextResponse.json({
             status: 'complete',
-            range: { start, end },
-            stats: { processed, success, errors: errors.length }
+            stats: {
+                processed,
+                success,
+                notFound,
+                errors: errors.length
+            }
         });
 
     } catch (error) {

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { env } from '@/src/config/env';
+import { getXZChunks, getXZTotalCount, getXZBreakdown, estimateScrapingTime } from '@/lib/xz-halltickets';
 
 export async function POST(request: NextRequest) {
     // 1. Verify Secret
@@ -9,51 +10,41 @@ export async function POST(request: NextRequest) {
     }
 
     try {
-        const start = BigInt(env.scraper.hallTicketStart);
-        const end = BigInt(env.scraper.hallTicketEnd);
+        const totalTickets = getXZTotalCount();
         const workerCount = env.scraper.workerCount;
+        const chunkSize = Math.ceil(totalTickets / workerCount);
+        const breakdown = getXZBreakdown();
+        const timeEstimate = estimateScrapingTime(env.scraper.delayMs, 300);
 
-        const total = Number(end - start) + 1;
-        const chunkSize = Math.ceil(total / workerCount);
+        console.log(`🚀 Starting XZ College scrape job`);
+        console.log(`📊 Total: ${totalTickets} hall tickets`);
+        console.log(`👷 Workers: ${workerCount}`);
+        console.log(`📦 Chunk size: ${chunkSize}`);
 
-        console.log(`🚀 Starting scrape job. Total: ${total}, Workers: ${workerCount}, Chunk: ${chunkSize}`);
+        // Split hall tickets into chunks
+        const chunks = getXZChunks(chunkSize);
 
-        const promises = [];
+        console.log(`✅ Created ${chunks.length} chunks`);
 
-        // Split into chunks and call workers
-        for (let i = 0; i < workerCount; i++) {
-            const chunkStart = start + BigInt(i * chunkSize);
-            let chunkEnd = chunkStart + BigInt(chunkSize) - 1n;
-            if (chunkEnd > end) chunkEnd = end;
-
-            if (chunkStart > end) break;
-
-            // Call worker (fire and forget / async)
-            // Note: In Vercel, we can't easily fire-and-forget without waiting.
-            // For true parallelism, we'd use a queue (QStash/Inngest).
-            // Here we just await them sequentially or use Promise.all (limited by timeout).
-
-            // For this implementation, we'll just return the plan
-            // A real production system would push these to a queue.
-            promises.push({
-                worker: i + 1,
-                range: { start: chunkStart.toString(), end: chunkEnd.toString() }
-            });
-        }
-
-        // In a real serverless setup, we would trigger these asynchronously.
-        // For now, we return the plan so you can see what WOULD happen.
-        // To actually run it, you'd need to call the worker endpoints.
+        // Return the plan (in production, you'd trigger workers here)
+        const plan = chunks.map((chunk, i) => ({
+            worker: i + 1,
+            tickets: chunk.length,
+            sample: chunk.slice(0, 3) // Show first 3 tickets as sample
+        }));
 
         return NextResponse.json({
             status: 'started',
-            message: 'Scraping job initialized',
+            message: 'XZ College scraping job initialized',
             config: {
-                total_students: total,
+                college: 'XZ',
+                regulations: breakdown,
+                total_tickets: totalTickets,
                 workers: workerCount,
-                chunk_size: chunkSize
+                chunk_size: chunkSize,
+                time_estimate: timeEstimate
             },
-            plan: promises
+            plan
         });
 
     } catch (error) {
