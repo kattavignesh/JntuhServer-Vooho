@@ -1,0 +1,13 @@
+{
+    "crons": [
+        {
+            "path": "/api/cron/watcher",
+            "schedule": "* * * * *"
+        }
+    ],
+    "functions": {
+        "app/api/**/*.ts": {
+            "maxDuration": 60
+        }
+    }
+}

@@ -1,0 +1,80 @@
+# ============================================
+# STEP 3 & 4: YOUR ENVIRONMENT SETUP
+# ============================================
+# Copy this content to create your .env.local file
+
+# INSTRUCTIONS:
+# 1. Create a new file named: .env.local
+# 2. Copy ALL the content below into that file
+# 3. Replace the PASTE_YOUR_... placeholders with your actual values
+# 4. Save the file
+
+# ============================================
+# DATABASE CONFIGURATION (Required)
+# ============================================
+# Get this from: Neon Dashboard → Your Project → Connection Details → Pooled Connection
+# It should look like: postgresql://username:password@ep-xxx-xxx.region.aws.neon.tech/neondb?sslmode=require
+DATABASE_URL=PASTE_YOUR_NEON_CONNECTION_STRING_HERE
+
+# ============================================
+# REDIS CONFIGURATION (Optional but Recommended)
+# ============================================
+# Get these from: Upstash Dashboard → Your Database → REST API section
+# URL looks like: https://xxx-xxx-12345.upstash.io
+# Token is a long base64 string
+UPSTASH_REDIS_REST_URL=PASTE_YOUR_UPSTASH_URL_HERE
+UPSTASH_REDIS_REST_TOKEN=PASTE_YOUR_UPSTASH_TOKEN_HERE
+
+# ============================================
+# SECURITY SECRETS (Required) - ALREADY GENERATED!
+# ============================================
+# ✅ These are already generated for you - just copy as-is
+CRON_SECRET=g691/PktO5cQpD2upVwUg5hXLXuCuPPBHMsT6wsXBKwM=
+API_SECRET_KEY=I67dCfHIPfLyhw7r4XlOegRLcHaOTFFBgQIpTKgHKftg=
+
+# ============================================
+# JNTUH CONFIGURATION
+# ============================================
+JNTUH_RESULTS_BASE_URL=http://results.jntuh.ac.in/results/
+JNTUH_EXAM_CODE=1323
+JNTUH_RESULT_TYPE=grade
+
+# ============================================
+# SCRAPER CONFIGURATION - R22 TEST RANGE
+# ============================================
+# ⚠️ Start with small range for testing (100 students)
+# After testing works, update to full range: 220100000001 to 220999999999
+SCRAPER_WORKER_COUNT=5
+HALL_TICKET_START=220100000001
+HALL_TICKET_END=220100000100
+SCRAPER_DELAY_MS=200
+SCRAPER_TIMEOUT_MS=10000
+SCRAPER_MAX_RETRIES=3
+
+# ============================================
+# CRON CONFIGURATION
+# ============================================
+WATCHER_CRON_SCHEDULE=* * * * *
+
+# ============================================
+# API CONFIGURATION
+# ============================================
+ENABLE_REDIS_CACHE=true
+CACHE_TTL_SECONDS=3600
+
+# ============================================
+# ENVIRONMENT
+# ============================================
+NODE_ENV=development
+
+# ============================================
+# WHAT TO DO NEXT:
+# ============================================
+# 1. Copy all content above
+# 2. Create file: .env.local (in project root)
+# 3. Paste the content
+# 4. Replace PASTE_YOUR_NEON_CONNECTION_STRING_HERE with your Neon URL
+# 5. Replace PASTE_YOUR_UPSTASH_URL_HERE with your Upstash URL
+# 6. Replace PASTE_YOUR_UPSTASH_TOKEN_HERE with your Upstash token
+# 7. Save the file
+# 8. Run: node scripts/validate-env.js
