@@ -4,8 +4,15 @@ import * as cheerio from 'cheerio';
 
 export async function GET(request: NextRequest) {
     // 1. Verify Cron Secret
+    // Support both Vercel Cron (via special header) and manual Bearer token
     const authHeader = request.headers.get('authorization');
-    if (authHeader !== `Bearer ${env.cron.secret}`) {
+    const vercelCronHeader = request.headers.get('x-vercel-cron-secret');
+
+    // Check if request is from Vercel Cron or has valid Bearer token
+    const isVercelCron = vercelCronHeader === env.cron.secret;
+    const isBearerAuth = authHeader === `Bearer ${env.cron.secret}`;
+
+    if (!isVercelCron && !isBearerAuth) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
