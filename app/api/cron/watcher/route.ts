@@ -65,7 +65,8 @@ export async function GET(request: NextRequest) {
                 title: r.text,
                 exam_code: r.examCode
             })),
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
+            version: "0.7.0"
         });
 
     } catch (error) {
